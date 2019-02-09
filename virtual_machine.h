@@ -137,23 +137,6 @@ class Stack {
     bool myStackEmpty;
     size_t myiTop;
 };
-#if 0
-template<>
-bool DataStack::peek(SCell &c);
-template<>
-bool DataStack::peek(UCell &c);
-
-template<>
-bool DataStack::push(SCell c);
-template<>
-bool DataStack::push(UCell c);
-
-template<>
-bool DataStack::pop(UCell &c);
-template<>
-bool DataStack::pop(SCell &c);
-#endif
-
 
 class DataStack : public Stack {
   public:
@@ -169,13 +152,15 @@ class InstructionStack : public Stack {
 
 
 class VirtualMachine {
-   public:
-      explicit VirtualMachine();
-      ~VirtualMachine();
+  public:
+    explicit VirtualMachine();
+    ~VirtualMachine();
 
-   private:
-      DataStack myDataStack;
-      InstructionStack myInstructionStack;
+    bool runOnce();
+
+  private:
+    DataStack myDataStack;
+    InstructionStack myInstructionStack;
 };
 
 
