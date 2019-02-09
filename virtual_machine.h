@@ -6,80 +6,6 @@
 #include <memory>
 #include <cmath>
 
-template<class T>
-class Cell;
-
-template<class T>
-Cell<T> operator+(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator-(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator*(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator/(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator%(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator-(Cell<T> lhs);
-namespace std {
-  template<class T>
-  const Cell<T> abs(Cell<T>& lhs) {
-    return std::abs(lhs.get());
-  }
-  template<class T>
-  const Cell<T> min(const Cell<T>& lhs, const Cell<T>& rhs) {
-    return std::min<T>(lhs.get(), rhs.get());
-  }
-  template<class T>
-  const Cell<T> max(const Cell<T>& lhs, const Cell<T>& rhs) {
-    return std::max<T>(lhs.get(), rhs.get());
-  }
-}
-
-template<class T>
-Cell<T> operator+(Cell<T> lhs, const T& rhs);
-template<class T>
-Cell<T> operator-(Cell<T> lhs, const T& rhs);
-template<class T>
-Cell<T> operator*(Cell<T> lhs, const T& rhs);
-template<class T>
-Cell<T> operator/(Cell<T> lhs, const T& rhs);
-template<class T>
-Cell<T> operator%(Cell<T> lhs, const T& rhs);
-
-
-
-template<class T>
-Cell<T> operator&(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator|(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator^(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator~(Cell<T> lhs);
-
-template<class T>
-Cell<T> operator<(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator>(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator<=(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator>=(Cell<T> lhs, const Cell<T>& rhs);
-template<class T>
-Cell<T> operator==(Cell<T> lhs, const Cell<T>& rhs);
-
-template<class T>
-Cell<T> operator<(Cell<T> lhs, const T& rhs);
-template<class T>
-Cell<T> operator>(Cell<T> lhs, const T& rhs);
-template<class T>
-Cell<T> operator<=(Cell<T> lhs, const T& rhs);
-template<class T>
-Cell<T> operator>=(Cell<T> lhs, const T& rhs);
-template<class T>
-Cell<T> operator==(Cell<T> lhs, const T& rhs);
-
 
 
 template<class T>
@@ -98,19 +24,25 @@ class Cell {
     operator Cell<unsigned int>() const {
       return Cell{static_cast<unsigned int>(value)};
     }
+
+    operator bool() const {
+      return static_cast<bool>(value);
+    }
 #pragma GCC diagnostic pop
 
     ~Cell();
 
-    T get() const;
+    T get() const {
+      return value;
+    }
     T value;
 };
 
+
+
+
 using SCell = Cell<int>;
 using UCell = Cell<unsigned int>;
-
-UCell operator<<(UCell lhs, const SCell& rhs);
-UCell operator>>(UCell lhs, const SCell& rhs);
 
 
 const size_t DATA_STACK_DEFAULT_SIZE = 256;
