@@ -165,7 +165,7 @@ class Operation<OPCODE_ABS> {
    void operator()(DataStack &ds) {
       SCell n1;
       ds.pop(n1);
-      ds.push(std::abs<SCell>(n1));
+      ds.push<SCell::type>(std::abs<SCell::type>(n1));
    }
 };
 template<>
@@ -174,7 +174,7 @@ class Operation<OPCODE_MIN> {
       SCell n1, n2;
       ds.pop(n1);
       ds.pop(n2);
-      ds.push(std::min(n1.get(), n2.get()));
+      ds.push(std::min<SCell::type>(n1, n2));
    }
 };
 template<>
@@ -183,7 +183,7 @@ class Operation<OPCODE_MAX> {
       SCell n1, n2;
       ds.pop(n1);
       ds.pop(n2);
-      ds.push(std::max<int>(n1.get(), n2.get()));
+      ds.push(std::max<SCell::type>(n1, n2));
    }
 };
 template<>

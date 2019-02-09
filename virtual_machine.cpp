@@ -3,50 +3,23 @@
 
 
 
-//template<class T>
-//Cell<T>::Cell(T data)
-//   : value{data}
-//{
-//}
-
-template<>
-Cell<int>::Cell(unsigned int data)
-   : value{static_cast<int>(data)}
-{
-}
-
-template<>
-Cell<unsigned int>::Cell(int data)
-   : value{static_cast<unsigned int>(data)}
-{
-}
-
-template<>
-Cell<int>::Cell(int data)
+template<class T>
+Cell<T>::Cell(T data)
    : value{data}
 {
 }
-
-template<>
-Cell<unsigned int>::Cell(unsigned int data)
-   : value{data}
-{
-}
-
 
 template<class T>
 Cell<T>::~Cell()
 {
 }
 
-
 template<class T>
 Cell<T> operator+(Cell<T> lhs, const Cell<T> &rhs) {
    return lhs.value + rhs.value;
 }
 
-
-DataStack::DataStack(size_t size)
+Stack::Stack(size_t size)
    : myStackSize{size},
    mypStack{new UCell[size]},
    myStackEmpty{false},
@@ -54,12 +27,8 @@ DataStack::DataStack(size_t size)
 {
 }
 
-DataStack::~DataStack() {
-}
-
-
 template<class T>
-bool DataStack::peek(Cell<T> &c) {
+bool Stack::peek(Cell<T> &c) {
    if (myStackEmpty) {
       return false;
    }
@@ -70,7 +39,7 @@ bool DataStack::peek(Cell<T> &c) {
 }
 
 template<class T>
-bool DataStack::pop(Cell<T> &c) {
+bool Stack::pop(Cell<T> &c) {
    if (myStackEmpty) {
       return false;
    }
@@ -84,7 +53,8 @@ bool DataStack::pop(Cell<T> &c) {
    return true;
 }
 
-bool DataStack::push(UCell c) {
+template<class T>
+bool Stack::push(Cell<T> c) {
    if (myiTop == myStackSize) {
       return false;
    }
@@ -100,7 +70,8 @@ bool DataStack::push(UCell c) {
 
 
 VirtualMachine::VirtualMachine()
-   : myDataStack{}
+   : myDataStack{},
+   myInstructionStack{}
 {
 }
 

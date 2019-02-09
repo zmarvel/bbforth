@@ -22,14 +22,18 @@ Cell<T> operator%(Cell<T> lhs, const Cell<T>& rhs);
 template<class T>
 Cell<T> operator-(Cell<T> lhs);
 namespace std {
-   template<class T>
-      Cell<T> abs(Cell<T>& lhs) {
-         return std::abs<T>(lhs.get());
-      }
-   template<class T>
-      const Cell<T>& min(const Cell<T>& lhs, const Cell<T>& rhs) {
-         return std::min<T>(lhs.get(), rhs.get());
-      }
+  template<class T>
+  const Cell<T> abs(Cell<T>& lhs) {
+    return std::abs(lhs.get());
+  }
+  template<class T>
+  const Cell<T> min(const Cell<T>& lhs, const Cell<T>& rhs) {
+    return std::min<T>(lhs.get(), rhs.get());
+  }
+  template<class T>
+  const Cell<T> max(const Cell<T>& lhs, const Cell<T>& rhs) {
+    return std::max<T>(lhs.get(), rhs.get());
+  }
 }
 
 template<class T>
@@ -80,15 +84,26 @@ Cell<T> operator==(Cell<T> lhs, const T& rhs);
 
 template<class T>
 class Cell {
-   public:
-      Cell();
-      Cell(int);
-      Cell(unsigned int);
+  public:
+    using type = T;
 
-      ~Cell();
+    Cell(T data = 0);
 
-      T get() const;
-      T value;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnarrowing"
+    operator Cell<int>() const {
+      return Cell{static_cast<int>(value)};
+    }
+
+    operator Cell<unsigned int>() const {
+      return Cell{static_cast<unsigned int>(value)};
+    }
+#pragma GCC diagnostic pop
+
+    ~Cell();
+
+    T get() const;
+    T value;
 };
 
 using SCell = Cell<int>;
@@ -99,29 +114,30 @@ UCell operator>>(UCell lhs, const SCell& rhs);
 
 
 const size_t DATA_STACK_DEFAULT_SIZE = 256;
+const size_t INSTRUCTION_STACK_DEFAULT_SIZE = 1024;
 
-class DataStack {
-   public:
-      explicit DataStack(size_t size = DATA_STACK_DEFAULT_SIZE);
-      ~DataStack();
+class Stack {
+  public:
+    Stack(size_t size);
 
-      DataStack(const DataStack &) = delete;
+    Stack(const Stack&) = delete;
 
-      template<class T>
-      bool peek(Cell<T> &c);
+    template<class T>
+    bool peek(Cell<T> &c);
 
-      template<class T>
-      bool push(Cell<T> c);
+    template<class T>
+    bool push(Cell<T> c);
 
-      template<class T>
-      bool pop(Cell<T> &c);
+    template<class T>
+    bool pop(Cell<T> &c);
 
-   private:
-      size_t myStackSize;
-      std::unique_ptr<UCell[]> mypStack;
-      bool myStackEmpty;
-      size_t myiTop;
+  private:
+    size_t myStackSize;
+    std::unique_ptr<UCell[]> mypStack;
+    bool myStackEmpty;
+    size_t myiTop;
 };
+#if 0
 template<>
 bool DataStack::peek(SCell &c);
 template<>
@@ -136,6 +152,20 @@ template<>
 bool DataStack::pop(UCell &c);
 template<>
 bool DataStack::pop(SCell &c);
+#endif
+
+
+class DataStack : public Stack {
+  public:
+    DataStack(size_t size = DATA_STACK_DEFAULT_SIZE)
+      : Stack{size} {}
+};
+
+class InstructionStack : public Stack {
+  public:
+    InstructionStack(size_t size = INSTRUCTION_STACK_DEFAULT_SIZE)
+      : Stack{size} {}
+};
 
 
 class VirtualMachine {
@@ -144,7 +174,8 @@ class VirtualMachine {
       ~VirtualMachine();
 
    private:
-      DataStack &myDataStack;
+      DataStack myDataStack;
+      InstructionStack myInstructionStack;
 };
 
 
