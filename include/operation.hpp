@@ -92,6 +92,8 @@ class Operation {
 /*
  * First override a bunch of operators to simplify operations on Cell<T>
  */
+
+/* - Arithmetic ------------------------------------------------------------ */
 template<class T>
 Cell<T> operator+(Cell<T> lhs, const Cell<T>& rhs) {
   return Cell<T>{lhs.get() + rhs.get()};
@@ -129,6 +131,7 @@ namespace std {
   }
 }
 
+/* - Arithmetic ------------------------------------------------------------ */
 template<class T>
 Cell<T> operator+(Cell<T> lhs, const T& rhs) {
   return lhs + Cell<T>{rhs};
@@ -152,6 +155,7 @@ Cell<T> operator%(Cell<T> lhs, const T& rhs) {
 
 
 
+/* - Bitwise --------------------------------------------------------------- */
 template<class T>
 Cell<T> operator&(Cell<T> lhs, const Cell<T>& rhs) {
   return Cell<T>{lhs.get() & rhs.get()};
@@ -169,6 +173,7 @@ Cell<T> operator~(Cell<T> lhs) {
   return Cell<T>{~lhs.get()};
 }
 
+/* - Comparison ------------------------------------------------------------ */
 template<class T>
 Cell<T> operator<(Cell<T> lhs, const Cell<T>& rhs) {
   return Cell<T>{lhs.get() < rhs.get()};
@@ -211,414 +216,198 @@ Cell<T> operator==(Cell<T> lhs, const T& rhs) {
   return Cell<T>{lhs.get() == rhs};
 }
 
-UCell operator<<(UCell lhs, const SCell& rhs) {
-  return UCell{lhs.get() << rhs.get()};
-}
-UCell operator>>(UCell lhs, const SCell& rhs) {
-  return UCell{lhs.get() >> rhs.get()};
-}
-
-
-/*
- * Now let's define translations from OpCodes to what the machine does
- */
-
 template<>
 class Operation<OPCODE_PLUS> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n1);
-      ds.pop(n2);
-      ds.push(n1 + n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_ONE_PLUS> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1;
-      ds.pop(n1);
-      ds.push(n1 + static_cast<unsigned int>(1));
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_MINUS> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n1 - n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_ONE_MINUS> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1;
-      ds.pop(n1);
-      ds.push(n1 - static_cast<unsigned int>(1));
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_STAR> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n1);
-      ds.pop(n2);
-      ds.push(n1 * n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_SLASH> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n1 / n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_MOD> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n1 % n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_SLASH_MOD> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n1 / n2);
-      ds.push(n1 % n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_NEGATE> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1;
-      ds.pop(n1);
-      ds.push(std::negate<SCell>{}(n1));
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_ABS> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1;
-      ds.pop(n1);
-      ds.push<SCell::type>(std::abs<SCell::type>(n1));
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_MIN> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1, n2;
-      ds.pop(n1);
-      ds.pop(n2);
-      ds.push(std::min<SCell::type>(n1, n2));
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_MAX> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1, n2;
-      ds.pop(n1);
-      ds.pop(n2);
-      ds.push(std::max<SCell::type>(n1, n2));
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_AND> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n1);
-      ds.pop(n2);
-      ds.push(n1 & n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_OR> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n1);
-      ds.pop(n2);
-      ds.push(n1 | n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_XOR> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n1);
-      ds.pop(n2);
-      ds.push(n1 ^ n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_INVERT> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1;
-      ds.pop(n1);
-      ds.push(~n1);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_LSHIFT> {
   public:
-    void operator()(DataStack &ds) {
-      UCell u1;
-      SCell n1;
-      ds.pop(n1);
-      ds.pop(u1);
-      ds.push(u1 << n1);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_RSHIFT> {
   public:
-    void operator()(DataStack &ds) {
-      UCell u1;
-      SCell n1;
-      ds.pop(n1);
-      ds.pop(u1);
-      ds.push(u1 >> n1);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_TWO_STAR> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1;
-      ds.pop(n1);
-      ds.push(n1 * 2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_TWO_SLASH> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1;
-      ds.pop(n1);
-      ds.push(n1 / 2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_LESS_THAN> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n1 < n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_EQUALS> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n1 == n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_GREATER_THAN> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n1 > n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_ZERO_LESS_THAN> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1;
-      ds.pop(n1);
-      ds.push(n1 < 0);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_ZERO_EQUALS> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1;
-      ds.pop(n1);
-      ds.push(n1 == static_cast<unsigned int>(0));
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_U_LESS_THAN> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n1 < n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_STAR_SLASH> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2, n3;
-      ds.pop(n3);
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push((n1*n2)/n3);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_STAR_SLASH_MOD> {
   public:
-    void operator()(DataStack &ds) {
-      SCell n1, n2, n3, n4, n5;
-      ds.pop(n3);
-      ds.pop(n2);
-      ds.pop(n1);
-      n4 = (n1*n2) % n3;
-      n5 = (n1*n2) / n3;
-      ds.push(n4);
-      ds.push(n5);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_DROP> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1;
-      ds.pop(n1);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_DUP> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1;
-      ds.pop(n1);
-      ds.push(n1);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_OVER> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n1);
-      ds.push(n2);
-      ds.push(n1);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_SWAP> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n2);
-      ds.push(n1);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_ROT> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2, n3;
-      ds.pop(n3);
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n2);
-      ds.push(n3);
-      ds.push(n1);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_QUESTION_DUP> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1;
-      ds.peek(n1);
-      if (n1) {
-        ds.push(n1);
-      }
-    }
+    void operator()(DataStack &ds);
 }; // TODO
 template<>
 class Operation<OPCODE_TWO_DROP> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n2);
-      ds.pop(n1);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_TWO_DUP> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2;
-      ds.pop(n2);
-      ds.peek(n1);
-      ds.push(n2);
-      ds.push(n1);
-      ds.push(n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_TWO_OVER> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2, n3, n4;
-      ds.pop(n4);
-      ds.pop(n3);
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n1);
-      ds.push(n2);
-      ds.push(n3);
-      ds.push(n4);
-      ds.push(n1);
-      ds.push(n2);
-    }
+    void operator()(DataStack &ds);
 };
 template<>
 class Operation<OPCODE_TWO_SWAP> {
   public:
-    void operator()(DataStack &ds) {
-      UCell n1, n2, n3, n4;
-      ds.pop(n4);
-      ds.pop(n3);
-      ds.pop(n2);
-      ds.pop(n1);
-      ds.push(n3);
-      ds.push(n4);
-      ds.push(n1);
-      ds.push(n2);
-    }
+    void operator()(DataStack &ds);
 };
+
+
 
 
 #endif // OPERATION_H

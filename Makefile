@@ -1,23 +1,39 @@
 
 
-SRCS := \
-	main.cpp \
-	virtual_machine.cpp \
+EXE := bbforth
 
-OBJS := $(SRCS:.cpp=.o)
-DEPS := $(SRCS:.cpp=.d)
+MAIN_SRC := src/main.cpp
+
+SRCS := \
+	src/virtual_machine.cpp \
+	src/operation.cpp \
+
+MAIN_OBJ := $(MAIN_SRC:%.cpp=%.o)
+OBJS := $(SRCS:%.cpp=%.o)
+
+TEST_SRCS := \
+	test/test_operation.cpp \
+	test/test_main.cpp \
+
+TEST_OBJS := $(TEST_SRCS:%.cpp=%.o)
+
+DEPS := $(SRCS:%.cpp=%.d) $(TEST_SRCS:%.cpp=%.d)
 
 CXXFLAGS += -std=c++11 -g -Wall -MD -Iinclude
 
+TEST_CXXFLAGS = -Ilib/catch2
+
 VPATH += ./src
 
-bbforth: $(OBJS)
+$(EXE): $(MAIN_OBJ) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^
 
-$(DEPS): $(OBJS)
+test: CXXFLAGS += $(TEST_CXXFLAGS)
+test: $(TEST_OBJS) $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^
 
 .PHONY: clean
 clean:
-	rm -f $(OBJS) $(DEPS)
+	rm -f $(EXE) $(MAIN_OBJ) $(OBJS) $(TEST_OBJS) $(DEPS)
 
 -include $(DEPS)

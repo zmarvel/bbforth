@@ -13,7 +13,10 @@ class Cell {
   public:
     using type = T;
 
-    Cell(T data = 0);
+    Cell(T data = 0)
+      : value{data}
+    {
+    }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnarrowing"
@@ -30,7 +33,9 @@ class Cell {
     }
 #pragma GCC diagnostic pop
 
-    ~Cell();
+    ~Cell()
+    {
+    }
 
     T get() const {
       return value;
@@ -55,13 +60,45 @@ class Stack {
     Stack(const Stack&) = delete;
 
     template<class T>
-    bool peek(Cell<T> &c);
+    bool peek(Cell<T> &c) {
+      if (myStackEmpty) {
+        return false;
+      }
+
+      c = mypStack.get()[myiTop];
+
+      return true;
+    }
 
     template<class T>
-    bool push(Cell<T> c);
+    bool push(Cell<T> c) {
+      if (myiTop == myStackSize) {
+        return false;
+      }
+
+      if (myStackEmpty) {
+        myStackEmpty = false;
+      }
+
+      mypStack[++myiTop] = c;
+
+      return true;
+    };
 
     template<class T>
-    bool pop(Cell<T> &c);
+    bool pop(Cell<T> &c) {
+      if (myStackEmpty) {
+        return false;
+      }
+
+      if (myiTop == 0) {
+        myStackEmpty = true;
+      }
+
+      c = mypStack.get()[myiTop--];
+
+      return true;
+    }
 
   private:
     size_t myStackSize;
