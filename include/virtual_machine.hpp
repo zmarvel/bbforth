@@ -20,6 +20,12 @@ class Cell {
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnarrowing"
+    Cell(const Cell<unsigned int>& other)
+      : value{other.value} { }
+
+    Cell(const Cell<int>& other)
+      : value{other.value} { }
+
     operator Cell<int>() const {
       return Cell{static_cast<int>(value)};
     }

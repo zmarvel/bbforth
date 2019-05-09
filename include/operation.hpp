@@ -94,9 +94,9 @@ class Operation {
  */
 
 /* - Arithmetic ------------------------------------------------------------ */
-template<class T>
-Cell<T> operator+(Cell<T> lhs, const Cell<T>& rhs) {
-  return Cell<T>{lhs.get() + rhs.get()};
+template<class T, class Tother>
+Cell<T> operator+(Cell<T> lhs, const Cell<Tother>& rhs) {
+  return Cell<T>{lhs.get() + static_cast<T>(rhs.get())};
 }
 template<class T>
 Cell<T> operator-(Cell<T> lhs, const Cell<T>& rhs) {

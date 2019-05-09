@@ -12,7 +12,7 @@ MAIN_OBJ := $(MAIN_SRC:%.cpp=%.o)
 OBJS := $(SRCS:%.cpp=%.o)
 
 TEST_SRCS := \
-	test/test_operation.cpp \
+	test/test_cell.cpp \
 	test/test_main.cpp \
 
 TEST_OBJS := $(TEST_SRCS:%.cpp=%.o)
