@@ -7,7 +7,9 @@ SRCS := \
 OBJS := $(SRCS:.cpp=.o)
 DEPS := $(SRCS:.cpp=.d)
 
-CXXFLAGS += -std=c++11 -g -Wall -MD
+CXXFLAGS += -std=c++11 -g -Wall -MD -Iinclude
+
+VPATH += ./src
 
 bbforth: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^

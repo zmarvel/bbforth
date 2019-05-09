@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <functional>
 
-#include "virtual_machine.h"
+#include "virtual_machine.hpp"
 
 /* Types */
 
