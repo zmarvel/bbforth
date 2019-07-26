@@ -28,9 +28,16 @@ VPATH += ./src
 $(EXE): $(MAIN_OBJ) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^
 
-test: CXXFLAGS += $(TEST_CXXFLAGS)
-test: $(TEST_OBJS) $(OBJS)
+bbforth_test: CXXFLAGS += $(TEST_CXXFLAGS)
+bbforth_test: $(TEST_OBJS) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^
+
+.PHONY: test
+test: bbforth_test
+
+.PHONY: check
+check: test
+	./bbforth_test
 
 .PHONY: clean
 clean:
